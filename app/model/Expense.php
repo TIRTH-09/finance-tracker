@@ -1,15 +1,27 @@
 <?php
-require_once __DIR__ . '/Database.php';
+require_once __DIR__ . "/Database.php";
 
-class Expense {
+class Expense
+{
+    private $db;
 
-    public static function getAll() {
-        $db = Database::connect();
-        return $db->query("SELECT * FROM expenses");
+    public function __construct()
+    {
+        $database = new Database();
+        $this->db = $database->conn;
     }
 
-    public static function add($title, $amount) {
-        $db = Database::connect();
-        $db->query("INSERT INTO expenses (title, amount) VALUES ('$title', '$amount')");
+    public function getAll()
+    {
+        return $this->db->query("SELECT * FROM expenses ORDER BY id DESC");
+    }
+
+    public function add($title, $amount)
+    {
+        $stmt = $this->db->prepare(
+            "INSERT INTO expenses (title, amount) VALUES (?, ?)"
+        );
+        $stmt->bind_param("sd", $title, $amount);
+        $stmt->execute();
     }
 }

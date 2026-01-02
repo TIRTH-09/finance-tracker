@@ -1,5 +1,10 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/finance-tracker/app/controller/HomeController.php';
+require_once "../app/controller/HomeController.php";
 
 $controller = new HomeController();
-$controller->index();
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $controller->store();
+} else {
+    $controller->index();
+}

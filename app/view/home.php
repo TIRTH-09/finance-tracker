@@ -7,22 +7,32 @@
 
 <h1>💰 Finance Tracker</h1>
 
-<form method="POST" action="?action=add">
-    <input type="text" name="title" placeholder="Expense title" required>
-    <input type="number" step="0.01" name="amount" placeholder="Amount" required>
-    <button type="submit">Add Expense</button>
+<form method="POST" action="">
+    <input type="text" name="title" placeholder="Expense Title" required>
+    <input type="number" name="amount" step="0.01" placeholder="Amount" required>
+    <button type="submit">Add</button>
 </form>
 
 <hr>
 
-<h3>Expense List</h3>
-<ul>
-<?php while ($row = $expenses->fetch_assoc()) : ?>
-    <li>
-        <?php echo $row['title']; ?> - ₹<?php echo $row['amount']; ?>
-    </li>
+<h2>Expense List</h2>
+
+<table border="1" cellpadding="5">
+<tr>
+    <th>Title</th>
+    <th>Amount</th>
+    <th>Date</th>
+</tr>
+
+<?php while ($row = $expenses->fetch_assoc()): ?>
+<tr>
+    <td><?= htmlspecialchars($row["title"]) ?></td>
+    <td><?= $row["amount"] ?></td>
+    <td><?= $row["created_at"] ?></td>
+</tr>
 <?php endwhile; ?>
-</ul>
+
+</table>
 
 </body>
 </html>

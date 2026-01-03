@@ -1,0 +1,20 @@
+<?php
+
+class Database
+{
+    public $conn;
+
+    public function __construct()
+    {
+        $this->conn = new mysqli(
+            "localhost",
+            "root",
+            "",
+            "finance_tracker"
+        );
+
+        if ($this->conn->connect_error) {
+            die("Database Connection Failed: " . $this->conn->connect_error);
+        }
+    }
+}

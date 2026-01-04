@@ -14,7 +14,34 @@
         Total Expense: ₹ <?= number_format($total, 2) ?>
     </div>
 
-    <form method="POST" action="">
+  <?php if (isset($editExpense)): ?>
+    <form method="POST" action="" class="edit-form">
+        <input type="hidden" name="id" value="<?= $editExpense['id'] ?>">
+
+        <input
+            type="text"
+            name="title"
+            value="<?= htmlspecialchars($editExpense['title']) ?>"
+            required
+        >
+
+        <input
+            type="number"
+            step="0.01"
+            name="amount"
+            value="<?= $editExpense['amount'] ?>"
+            required
+        >
+
+        <button type="submit">Update Expense</button>
+        <a href="index.php" class="btn-cancel">Cancel</a>
+    </form>
+<?php endif; ?>
+
+
+
+   <form method="POST" action="" id="expenseForm">
+
         <input type="text" name="title" placeholder="Expense Title" required>
         <input type="number" step="0.01" name="amount" placeholder="Amount" required>
         <button type="submit">Add Expense</button>
@@ -57,6 +84,9 @@
         </tbody>
     </table>
 </div>
+
+<script src="public/js/app.js"></script>
+
 
 </body>
 </html>

@@ -68,4 +68,18 @@ class HomeController
         header("Location: /finance-tracker/public/");
         exit;
     }
+
+    public function ajaxAdd()
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        require_once __DIR__ . '/../model/Expense.php';
+
+        $expense = new Expense();
+        $expense->create($_POST['title'], $_POST['amount']);
+
+        echo json_encode(['success' => true]);
+        exit;
+    }
+}
+
 }

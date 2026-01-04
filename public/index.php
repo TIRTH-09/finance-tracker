@@ -15,7 +15,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $controller->delete();
     } elseif ($action === "edit") {
         $controller->edit();
-    } else {
+    } else
+    if ($action === 'ajaxAdd') {
+    $controller->ajaxAdd();
+    exit;
+}
+
+    {
         $controller->index();
     }
 }

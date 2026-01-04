@@ -24,4 +24,34 @@ class Expense
         $stmt->bind_param("sd", $title, $amount);
         $stmt->execute();
     }
+
+    public function delete($id)
+    {
+        $stmt = $this->db->prepare(
+            "DELETE FROM expenses WHERE id = ?"
+        );
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+    }
+
+    // ✅ GET SINGLE EXPENSE
+    public function find($id)
+    {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM expenses WHERE id = ?"
+        );
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    // ✅ UPDATE EXPENSE
+    public function update($id, $title, $amount)
+    {
+        $stmt = $this->db->prepare(
+            "UPDATE expenses SET title = ?, amount = ? WHERE id = ?"
+        );
+        $stmt->bind_param("sdi", $title, $amount, $id);
+        $stmt->execute();
+    }
 }

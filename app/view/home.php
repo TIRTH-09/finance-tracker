@@ -2,37 +2,52 @@
 <html>
 <head>
     <title>Finance Tracker</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-<h1>💰 Finance Tracker</h1>
+<div class="container">
 
-<form method="POST" action="">
-    <input type="text" name="title" placeholder="Expense Title" required>
-    <input type="number" name="amount" step="0.01" placeholder="Amount" required>
-    <button type="submit">Add</button>
-</form>
+    <h1>💰 Finance Tracker</h1>
 
-<hr>
+    <div class="total-box">
+        Total Expense: <span>₹ <?= $total ?></span>
+    </div>
 
-<h2>Expense List</h2>
+    <form method="POST" action="?action=store" class="expense-form">
+        <input type="text" name="title" placeholder="Expense Title" required>
+        <input type="number" name="amount" step="0.01" placeholder="Amount" required>
+        <button type="submit">Add Expense</button>
+    </form>
 
-<table border="1" cellpadding="5">
-<tr>
-    <th>Title</th>
-    <th>Amount</th>
-    <th>Date</th>
-</tr>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Amount (₹)</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
 
-<?php while ($row = $expenses->fetch_assoc()): ?>
-<tr>
-    <td><?= htmlspecialchars($row["title"]) ?></td>
-    <td><?= $row["amount"] ?></td>
-    <td><?= $row["created_at"] ?></td>
-</tr>
-<?php endwhile; ?>
+        <tbody>
+        <?php while ($row = $expenses->fetch_assoc()): ?>
+            <tr>
+                <td><?= htmlspecialchars($row['title']) ?></td>
+                <td><?= $row['amount'] ?></td>
+                <td><?= $row['created_at'] ?></td>
+                <td>
+                    <a class="btn-edit" href="?action=edit&id=<?= $row['id'] ?>">Edit</a>
+                    <a class="btn-delete" href="?action=delete&id=<?= $row['id'] ?>"
+                       onclick="return confirm('Delete this expense?')">Delete</a>
+                </td>
+            </tr>
+        <?php endwhile; ?>
+        </tbody>
+    </table>
 
-</table>
+</div>
 
 </body>
 </html>

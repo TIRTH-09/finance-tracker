@@ -1,57 +1,40 @@
 <?php
 require_once __DIR__ . "/Database.php";
 
-class Expense
-{
+class Expense {
     private $db;
 
-    public function __construct()
-    {
+    public function __construct() {
         $database = new Database();
         $this->db = $database->conn;
     }
 
-    public function getAll()
-    {
+    public function getAll() {
         return $this->db->query("SELECT * FROM expenses ORDER BY id DESC");
     }
 
-    public function add($title, $amount)
-    {
-        $stmt = $this->db->prepare(
-            "INSERT INTO expenses (title, amount) VALUES (?, ?)"
-        );
-        $stmt->bind_param("sd", $title, $amount);
-        $stmt->execute();
+    public function add($title, $amount, $category) {
+        $stmt = $this->db->prepare("INSERT INTO expenses (title, amount, category) VALUES (?, ?, ?)");
+        $stmt->bind_param("sds", $title, $amount, $category);
+        return $stmt->execute();
     }
 
-    public function delete($id)
-    {
-        $stmt = $this->db->prepare(
-            "DELETE FROM expenses WHERE id = ?"
-        );
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-    }
-
-    // ✅ GET SINGLE EXPENSE
-    public function find($id)
-    {
-        $stmt = $this->db->prepare(
-            "SELECT * FROM expenses WHERE id = ?"
-        );
+    public function find($id) {
+        $stmt = $this->db->prepare("SELECT * FROM expenses WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
     }
 
-    // ✅ UPDATE EXPENSE
-    public function update($id, $title, $amount)
-    {
-        $stmt = $this->db->prepare(
-            "UPDATE expenses SET title = ?, amount = ? WHERE id = ?"
-        );
-        $stmt->bind_param("sdi", $title, $amount, $id);
-        $stmt->execute();
+    public function update($id, $title, $amount, $category) {
+        $stmt = $this->db->prepare("UPDATE expenses SET title = ?, amount = ?, category = ? WHERE id = ?");
+        $stmt->bind_param("sdsi", $title, $amount, $category, $id);
+        return $stmt->execute();
+    }
+
+    public function delete($id) {
+        $stmt = $this->db->prepare("DELETE FROM expenses WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        return $stmt->execute();
     }
 }

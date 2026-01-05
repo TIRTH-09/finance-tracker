@@ -1,92 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Finance Tracker</title>
-    <!-- CSS cache fix explained below -->
-    <link rel="stylesheet" href="/finance-tracker/public/css/style.css?v=1">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
 <div class="container">
-    <h1>💰 Finance Tracker</h1>
-
-    <div class="total">
-        Total Expense: ₹ <?= number_format($total, 2) ?>
+    <div class="dashboard-header">
+        <h1>Overview</h1>
+        <div class="card" style="padding: 10px 20px;">
+            <p style="margin: 0; font-size: 12px; color: #64748b;">Total Spent</p>
+            <h2 style="margin: 0; color: var(--primary);">₹<?= number_format($total, 2) ?></h2>
+        </div>
     </div>
 
-  <?php if (isset($editExpense)): ?>
-    <form method="POST" action="" class="edit-form">
-        <input type="hidden" name="id" value="<?= $editExpense['id'] ?>">
+    <div class="card" style="margin-bottom: 24px;">
+        <form id="expenseForm" class="grid-form">
+            <div class="form-group">
+                <label>Description</label>
+                <input type="text" name="title" placeholder="e.g. Coffee" required>
+            </div>
+            <div class="form-group">
+                <label>Amount</label>
+                <input type="number" name="amount" step="0.01" placeholder="0.00" required>
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select name="category">
+                    <option value="Food">Food</option>
+                    <option value="Travel">Travel</option>
+                    <option value="Bills">Bills</option>
+                    <option value="Shopping">Shopping</option>
+                </select>
+            </div>
+            <button type="submit">Add</button>
+        </form>
+    </div>
 
-        <input
-            type="text"
-            name="title"
-            value="<?= htmlspecialchars($editExpense['title']) ?>"
-            required
-        >
-
-        <input
-            type="number"
-            step="0.01"
-            name="amount"
-            value="<?= $editExpense['amount'] ?>"
-            required
-        >
-
-        <button type="submit">Update Expense</button>
-        <a href="index.php" class="btn-cancel">Cancel</a>
-    </form>
-<?php endif; ?>
-
-
-
-   <form method="POST" action="" id="expenseForm">
-
-        <input type="text" name="title" placeholder="Expense Title" required>
-        <input type="number" step="0.01" name="amount" placeholder="Amount" required>
-        <button type="submit">Add Expense</button>
-    </form>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Amount (₹)</th>
-                <th>Date</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-
-        <!-- ✅ CORRECT LOOP -->
-        <?php if (!empty($expenses)): ?>
-            <?php foreach ($expenses as $row): ?>
+    <div class="card">
+        <table>
+            <thead>
+                <tr><th>Description</th><th>Category</th><th>Amount</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                <?php foreach ($expenses as $row): ?>
                 <tr>
-                    <td><?= htmlspecialchars($row['title']) ?></td>
-                    <td><?= number_format($row['amount'], 2) ?></td>
-                    <td><?= $row['created_at'] ?></td>
+                    <td><strong><?= htmlspecialchars($row['title']) ?></strong></td>
+                    <td><span class="badge"><?= $row['category'] ?></span></td>
+                    <td>₹<?= number_format($row['amount'], 2) ?></td>
                     <td>
-                        <a class="btn-edit" href="?action=edit&id=<?= $row['id'] ?>">Edit</a>
-                        <a class="btn-delete"
-                           href="?action=delete&id=<?= $row['id'] ?>"
-                           onclick="return confirm('Delete this expense?')">
-                           Delete
-                        </a>
+                        <a href="index.php?action=edit&id=<?= $row['id'] ?>" style="color: var(--primary); text-decoration: none;">Edit</a> |
+                        <a href="index.php?action=delete&id=<?= $row['id'] ?>" style="color: #ef4444; text-decoration: none;" onclick="return confirm('Delete?')">Delete</a>
                     </td>
                 </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <tr>
-                <td colspan="4">No expenses found</td>
-            </tr>
-        <?php endif; ?>
-
-        </tbody>
-    </table>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
-
-<script src="public/js/app.js"></script>
-
-
+<script src="js/app.js"></script>
 </body>
 </html>

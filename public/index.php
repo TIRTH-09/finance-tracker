@@ -5,23 +5,17 @@ $controller = new HomeController();
 $action = $_GET["action"] ?? null;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if ($action === "update") {
+    if ($action === "ajaxAdd") {
+        $controller->ajaxAdd();
+    } elseif ($action === "update") {
         $controller->update();
-    } else {
-        $controller->store();
     }
 } else {
     if ($action === "delete") {
         $controller->delete();
     } elseif ($action === "edit") {
         $controller->edit();
-    } else
-    if ($action === 'ajaxAdd') {
-    $controller->ajaxAdd();
-    exit;
-}
-
-    {
+    } else {
         $controller->index();
     }
 }

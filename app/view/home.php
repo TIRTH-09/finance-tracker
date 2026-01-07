@@ -23,7 +23,7 @@
             </div>
             <div class="form-group">
                 <label>Amount</label>
-                <input type="number" name="amount" step="0.01" placeholder="0.00" required>
+                <input type="number" name="amount" step="50" placeholder="0.00" required>
             </div>
             <div class="form-group">
                 <label>Category</label>

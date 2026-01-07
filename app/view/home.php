@@ -2,63 +2,130 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Finance Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overview - Finance Tracker</title>
     <link rel="stylesheet" href="css/style.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 <body>
-<div class="container">
-    <div class="dashboard-header">
-        <h1>Overview</h1>
-        <div class="card" style="padding: 10px 20px;">
-            <p style="margin: 0; font-size: 12px; color: #64748b;">Total Spent</p>
-            <h2 style="margin: 0; color: var(--primary);">₹<?= number_format($total, 2) ?></h2>
+
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon"></div>
+            FinanceTrack
         </div>
-    </div>
+        <nav class="menu">
+            <a href="index.php" class="menu-item active">
+                <ion-icon name="grid-outline" class="menu-icon"></ion-icon>
+                Overview
+            </a>
+            <a href="#" class="menu-item">
+                <ion-icon name="receipt-outline" class="menu-icon"></ion-icon>
+                Transactions
+            </a>
+             <a href="#" class="menu-item" style="opacity: 0.5; cursor: not-allowed;">
+                <ion-icon name="pie-chart-outline" class="menu-icon"></ion-icon>
+                Budgets (Soon)
+            </a>
+        </nav>
+    </aside>
 
-    <div class="card" style="margin-bottom: 24px;">
-        <form id="expenseForm" class="grid-form">
-            <div class="form-group">
-                <label>Description</label>
-                <input type="text" name="title" placeholder="e.g. Coffee" required>
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="search-bar">
+                <ion-icon name="search-outline" style="vertical-align: middle; margin-right: 8px;"></ion-icon>
+                Search transactions...
             </div>
-            <div class="form-group">
-                <label>Amount</label>
-                <input type="number" name="amount" step="50" placeholder="0.00" required>
+            <div>
+                <ion-icon name="notifications-outline" style="font-size: 1.5rem; color: var(--text-muted); cursor: pointer;"></ion-icon>
             </div>
-            <div class="form-group">
-                <label>Category</label>
-                <select name="category">
-                    <option value="Food">Food</option>
-                    <option value="Travel">Travel</option>
-                    <option value="Bills">Bills</option>
-                    <option value="Shopping">Shopping</option>
-                </select>
-            </div>
-            <button type="submit">Add</button>
-        </form>
-    </div>
+        </header>
 
-    <div class="card">
-        <table>
-            <thead>
-                <tr><th>Description</th><th>Category</th><th>Amount</th><th>Actions</th></tr>
-            </thead>
-            <tbody>
-                <?php foreach ($expenses as $row): ?>
-                <tr>
-                    <td><strong><?= htmlspecialchars($row['title']) ?></strong></td>
-                    <td><span class="badge"><?= $row['category'] ?></span></td>
-                    <td>₹<?= number_format($row['amount'], 2) ?></td>
-                    <td>
-                        <a href="index.php?action=edit&id=<?= $row['id'] ?>" style="color: var(--primary); text-decoration: none;">Edit</a> |
-                        <a href="index.php?action=delete&id=<?= $row['id'] ?>" style="color: #ef4444; text-decoration: none;" onclick="return confirm('Delete?')">Delete</a>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
+        <div class="dashboard-grid">
+            <div class="card hero-card">
+                <span class="hero-label">Total Spending</span>
+                <h1 class="hero-amount">₹ <?= number_format($total, 2) ?></h1>
+            </div>
+
+            <div class="card">
+                 <div class="section-header">
+                    <h2 class="section-title">Add New Expense</h2>
+                </div>
+                <form id="expenseForm">
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <input type="text" name="title" class="form-input" placeholder="e.g. Whole Foods Market" required>
+                    </div>
+                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div>
+                            <label class="form-label">Amount</label>
+                            <input type="number" name="amount" step="0.01" class="form-input" placeholder="0.00" required>
+                        </div>
+                        <div>
+                             <label class="form-label">Category</label>
+                            <select name="category" class="form-select">
+                                <option value="Food">Food & Drinks</option>
+                                <option value="Shopping">Shopping</option>
+                                <option value="Transport">Transport</option>
+                                <option value="Bills">Bills & Utilities</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Add Expense</button>
+                </form>
+            </div>
+
+            <div class="card" style="display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-weight: 500;">
+                <div style="text-align: center;">
+                    <ion-icon name="pie-chart" style="font-size: 3rem; opacity: 0.3;"></ion-icon>
+                    <p style="margin-top: 10px;">Spending Insights<br>(Coming Soon)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2 class="section-title">Recent Transactions</h2>
+            <a href="#" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.9rem;">View all</a>
+        </div>
+
+        <div class="card">
+            <?php if (empty($expenses)): ?>
+                <p style="color: var(--text-muted); text-align: center; padding: 20px;">No transactions yet.</p>
+            <?php else: ?>
+                <div class="transaction-list">
+                    <?php foreach ($expenses as $row): ?>
+                    <div class="transaction-item">
+                        <div class="t-left">
+                            <div class="t-icon-bg">
+                                <ion-icon name="cart-outline"></ion-icon>
+                            </div>
+                            <div class="t-info">
+                                <div style="display: flex; align-items: center;">
+                                    <span class="t-title"><?= htmlspecialchars($row['title']) ?></span>
+                                    <span class="badge"><?= htmlspecialchars($row['category']) ?></span>
+                                </div>
+                                <span class="t-meta">Today</span>
+                            </div>
+                        </div>
+                        <div class="t-right">
+                            <span class="t-amount">-₹<?= number_format($row['amount'], 2) ?></span>
+                            <div class="t-actions">
+                                <a href="index.php?action=edit&id=<?= $row['id'] ?>" class="btn-edit-link">Edit</a>
+                                <a href="index.php?action=delete&id=<?= $row['id'] ?>" class="btn-delete-link" onclick="return confirm('Are you sure you want to delete this expense?')">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
+    </main>
 </div>
+
 <script src="js/app.js"></script>
 </body>
 </html>

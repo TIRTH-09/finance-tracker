@@ -7,14 +7,18 @@ class HomeController {
         $result = $model->getAll();
         $expenses = [];
         $total = 0;
-        while ($row = $result->fetch_assoc()) {
-            $expenses[] = $row;
-            $total += $row['amount'];
+        
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                $expenses[] = $row;
+                $total += (float)$row['amount'];
+            }
         }
         require __DIR__ . "/../view/home.php";
     }
 
     public function ajaxAdd() {
+        header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $model = new Expense();
             $success = $model->add($_POST['title'], $_POST['amount'], $_POST['category']);
@@ -24,9 +28,9 @@ class HomeController {
     }
 
     public function edit() {
-        if (!isset($_GET['id'])) { header("Location: index.php"); exit; }
         $model = new Expense();
         $expense = $model->find($_GET['id']);
+        if (!$expense) { header("Location: index.php"); exit; }
         require __DIR__ . "/../view/edit.php";
     }
 

@@ -35,10 +35,15 @@
     <main class="main-content">
         <header class="top-bar">
             <div class="search-bar">
-                <ion-icon name="search-outline" style="vertical-align: middle; margin-right: 8px;"></ion-icon>
-                Search transactions...
+                <ion-icon name="search-outline" style="font-size: 1.2rem;"></ion-icon>
+                <input type="text" placeholder="Search transactions...">
             </div>
-            <div>
+            
+            <div style="display: flex; align-items: center;">
+                <button id="themeToggle" class="theme-toggle" title="Toggle Dark Mode">
+                    <ion-icon name="moon-outline"></ion-icon>
+                </button>
+
                 <ion-icon name="notifications-outline" style="font-size: 1.5rem; color: var(--text-muted); cursor: pointer;"></ion-icon>
             </div>
         </header>
@@ -78,11 +83,9 @@
                 </form>
             </div>
 
-            <div class="card" style="display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-weight: 500;">
-                <div style="text-align: center;">
-                    <ion-icon name="pie-chart" style="font-size: 3rem; opacity: 0.3;"></ion-icon>
-                    <p style="margin-top: 10px;">Spending Insights<br>(Coming Soon)</p>
-                </div>
+            <div class="card" style="display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--text-muted);">
+                <ion-icon name="pie-chart" style="font-size: 3rem; opacity: 0.3; margin-bottom: 10px;"></ion-icon>
+                <p style="text-align: center; font-weight: 500;">Spending Insights<br>(Coming Soon)</p>
             </div>
         </div>
 
@@ -114,7 +117,7 @@
                             <span class="t-amount">-₹<?= number_format($row['amount'], 2) ?></span>
                             <div class="t-actions">
                                 <a href="index.php?action=edit&id=<?= $row['id'] ?>" class="btn-edit-link">Edit</a>
-                                <a href="index.php?action=delete&id=<?= $row['id'] ?>" class="btn-delete-link" onclick="return confirm('Are you sure you want to delete this expense?')">Delete</a>
+                                <a href="index.php?action=delete&id=<?= $row['id'] ?>" class="btn-delete-link" onclick="return confirm('Delete this expense?')">Delete</a>
                             </div>
                         </div>
                     </div>
@@ -122,7 +125,6 @@
                 </div>
             <?php endif; ?>
         </div>
-
     </main>
 </div>
 

@@ -18,11 +18,23 @@ class HomeController {
     }
 
     public function ajaxAdd() {
+        // Prevent any previous output from breaking JSON
+        ob_clean(); 
         header('Content-Type: application/json');
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $model = new Expense();
-            $success = $model->add($_POST['title'], $_POST['amount'], $_POST['category']);
-            echo json_encode(['success' => $success]);
+            // Basic validation
+            $title = $_POST['title'] ?? '';
+            $amount = $_POST['amount'] ?? 0;
+            $category = $_POST['category'] ?? 'Other';
+            
+            if(!empty($title) && !empty($amount)) {
+                $success = $model->add($title, $amount, $category);
+                echo json_encode(['success' => $success]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid input']);
+            }
             exit;
         }
     }

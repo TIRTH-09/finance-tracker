@@ -2,6 +2,8 @@
 require_once __DIR__ . "/../model/Expense.php";
 
 class HomeController {
+    
+    // Show Dashboard
     public function index() {
         $model = new Expense();
         $result = $model->getAll();
@@ -17,50 +19,94 @@ class HomeController {
         require __DIR__ . "/../view/home.php";
     }
 
+    // 1. AJAX Add
     public function ajaxAdd() {
-        // Prevent any previous output from breaking JSON
-        ob_clean(); 
-        header('Content-Type: application/json');
+        $this->cleanOutput(); // Helper to clear buffer
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $model = new Expense();
-            // Basic validation
-            $title = $_POST['title'] ?? '';
-            $amount = $_POST['amount'] ?? 0;
+            $title = trim($_POST['title'] ?? '');
+            $amount = floatval($_POST['amount'] ?? 0);
             $category = $_POST['category'] ?? 'Other';
             
-            if(!empty($title) && !empty($amount)) {
-                $success = $model->add($title, $amount, $category);
+            // VALIDATION
+            if (empty($title)) {
+                echo json_encode(['success' => false, 'message' => 'Description is required']);
+                exit;
+            }
+            if ($amount <= 0) {
+                echo json_encode(['success' => false, 'message' => 'Amount must be greater than 0']);
+                exit;
+            }
+
+            $model = new Expense();
+            $success = $model->add($title, $amount, $category);
+            echo json_encode(['success' => $success]);
+            exit;
+        }
+    }
+
+    // 2. AJAX Delete
+    public function ajaxDelete() {
+        $this->cleanOutput();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'] ?? null;
+            if ($id) {
+                $model = new Expense();
+                $success = $model->delete($id);
                 echo json_encode(['success' => $success]);
             } else {
-                echo json_encode(['success' => false, 'message' => 'Invalid input']);
+                echo json_encode(['success' => false, 'message' => 'ID missing']);
             }
             exit;
         }
     }
 
-    public function edit() {
-        $model = new Expense();
-        $expense = $model->find($_GET['id']);
-        if (!$expense) { header("Location: index.php"); exit; }
-        require __DIR__ . "/../view/edit.php";
+    // 3. AJAX Get Single (For Edit Modal)
+    public function ajaxGetExpense() {
+        $this->cleanOutput();
+
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            $model = new Expense();
+            $data = $model->find($id);
+            if ($data) {
+                echo json_encode(['success' => true, 'data' => $data]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Not found']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'No ID']);
+        }
+        exit;
     }
 
-    public function update() {
+    // 4. AJAX Update
+    public function ajaxUpdate() {
+        $this->cleanOutput();
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'] ?? null;
+            $title = trim($_POST['title'] ?? '');
+            $amount = floatval($_POST['amount'] ?? 0);
+            $category = $_POST['category'] ?? 'Other';
+
+            // VALIDATION
+            if (empty($title) || $amount <= 0 || !$id) {
+                echo json_encode(['success' => false, 'message' => 'Invalid input']);
+                exit;
+            }
+
             $model = new Expense();
-            $model->update($_POST['id'], $_POST['title'], $_POST['amount'], $_POST['category']);
+            $success = $model->update($id, $title, $amount, $category);
+            echo json_encode(['success' => $success]);
+            exit;
         }
-        header("Location: index.php");
-        exit;
     }
 
-    public function delete() {
-        if (isset($_GET['id'])) {
-            $model = new Expense();
-            $model->delete($_GET['id']);
-        }
-        header("Location: index.php");
-        exit;
+    // Helper to prevent JSON errors
+    private function cleanOutput() {
+        ob_clean();
+        header('Content-Type: application/json');
     }
 }

@@ -454,18 +454,32 @@ body {
 /* ... [KEEP ALL PREVIOUS CSS] ... */
 
 /* ================= LOGIN PAGE STYLES ================= */
+/* ================= LOGIN PAGE STYLES (Refined) ================= */
+/* ================= LOGIN PAGE STYLES (Executive Theme) ================= */
+/* ================= LOGIN PAGE STYLES (Fixed & Optimized) ================= */
 .login-container {
+    /* FORCE LIGHT MODE VARIABLES LOCALLY */
+    --bg-white: #ffffff;
+    --bg-main: #f8fafc;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --border-light: #e2e8f0;
+    --primary: #4f46e5;
+    
     display: flex;
     height: 100vh;
     width: 100vw;
-    background: var(--bg-white);
+    background: var(--bg-white); /* Always White on right side */
     overflow: hidden;
+    position: relative;
+    z-index: 1;
 }
 
-/* Left Art Section */
+/* --- Left Side: Blue Gradient + Shards --- */
 .login-art {
     flex: 1;
-    background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+    /* Restored the Rich Indigo Gradient you liked */
+    background: linear-gradient(135deg, #4338ca 0%, #312e81 100%);
     position: relative;
     display: flex;
     justify-content: center;
@@ -475,92 +489,170 @@ body {
     overflow: hidden;
 }
 
-.art-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
+/* Texture Overlay for Depth */
+.texture-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px);
+    background-size: 30px 30px;
+    opacity: 0.4;
+    z-index: 0;
 }
 
-.art-content h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 10px; letter-spacing: -1px; }
-.art-content p { font-size: 1.2rem; opacity: 0.9; font-weight: 300; }
+/* Content */
+.art-content {
+    position: relative;
+    z-index: 10;
+    text-align: left;
+    max-width: 480px;
+    animation: fadeInUp 0.8s ease-out; /* Fast entrance */
+}
 
-/* Abstract Floating Shapes */
-.floating-shape {
+.art-content h1 {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    letter-spacing: -2px;
+    line-height: 1;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.art-content p {
+    font-size: 1.15rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+    line-height: 1.6;
+    border-left: 4px solid #818cf8; /* Light Indigo Accent */
+    padding-left: 20px;
+}
+
+/* --- The Shards (Geometry) --- */
+.abstract-shard {
     position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.15);
     z-index: 1;
 }
 
-.shape-1 {
-    width: 300px; height: 300px;
-    top: -50px; left: -50px;
-    animation: float 10s infinite ease-in-out;
+/* Optimized Animations (Removed infinite loops for performance) */
+.shard-1 {
+    width: 500px; height: 1000px;
+    top: -20%; left: -10%;
+    transform: rotate(35deg);
+    /* Gentle floating instead of sliding */
+    animation: floatShard1 10s ease-in-out infinite alternate; 
 }
 
-.shape-2 {
-    width: 200px; height: 200px;
-    bottom: 50px; right: -20px;
-    background: rgba(255, 255, 255, 0.15);
-    animation: float 15s infinite ease-in-out reverse;
+.shard-2 {
+    width: 350px; height: 700px;
+    bottom: -15%; right: -5%;
+    transform: rotate(35deg);
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0));
+    animation: floatShard2 12s ease-in-out infinite alternate;
 }
 
-@keyframes float {
-    0% { transform: translate(0, 0) rotate(0deg); }
-    50% { transform: translate(30px, 50px) rotate(10deg); }
-    100% { transform: translate(0, 0) rotate(0deg); }
+@keyframes floatShard1 {
+    from { transform: rotate(35deg) translate(0, 0); }
+    to { transform: rotate(35deg) translate(20px, -20px); }
 }
 
-/* Right Form Section */
+@keyframes floatShard2 {
+    from { transform: rotate(35deg) translate(0, 0); }
+    to { transform: rotate(35deg) translate(-20px, 20px); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Right Side: Form --- */
 .login-form-wrapper {
-    flex: 1;
+    flex: 0.85;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: var(--bg-main);
+    background: #ffffff; /* Explicit White */
 }
 
 .login-card {
     width: 100%;
-    max-width: 420px;
-    padding: 40px;
-    background: var(--bg-white);
-    border-radius: 24px;
-    box-shadow: 0 20px 50px -10px rgba(0,0,0,0.1);
+    max-width: 400px;
+    padding: 20px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
 }
 
-.login-header { margin-bottom: 32px; text-align: center; }
-.login-header h2 { font-size: 1.8rem; font-weight: 800; color: var(--text-dark); margin-bottom: 8px; }
-.login-header p { color: var(--text-muted); }
+.login-header { text-align: left; margin-bottom: 32px; }
+.login-header h2 { 
+    font-size: 2rem; 
+    font-weight: 800; 
+    color: #1e293b; /* Explicit Dark Text */
+    letter-spacing: -1px; 
+}
+.login-header p { color: #64748b; margin-top: 8px; }
 
-/* Input with Icon */
-.input-icon-wrap { position: relative; display: flex; align-items: center; }
+/* Inputs - Explicit Colors */
+.form-label { 
+    font-size: 0.75rem; 
+    text-transform: uppercase; 
+    letter-spacing: 0.5px; 
+    margin-bottom: 8px; 
+    color: #64748b; 
+    font-weight: 700;
+}
+
+.form-input { 
+    background: #f8fafc; 
+    border: 1px solid #e2e8f0; 
+    color: #1e293b;
+    font-size: 1rem;
+    padding-left: 48px;
+    transition: all 0.2s;
+}
+
+.form-input:focus { 
+    background: #ffffff; 
+    border-color: #4f46e5; 
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); 
+}
+
+/* Input Icons */
 .input-icon-wrap ion-icon {
     position: absolute;
     left: 16px;
-    color: var(--text-muted);
+    color: #94a3b8;
     font-size: 1.2rem;
+    transition: color 0.2s;
 }
-.input-icon-wrap .form-input { padding-left: 48px; }
-
-.error-banner {
-    background: #fef2f2;
-    color: #ef4444;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-    display: flex; align-items: center; gap: 8px;
-    border: 1px solid #fecaca;
+.input-icon-wrap:focus-within ion-icon {
+    color: #4f46e5;
 }
 
-/* Responsive */
+/* Button */
+.btn-primary {
+    background: #4f46e5; /* Indigo */
+    height: 50px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+}
+.btn-primary:hover { 
+    background: #4338ca; 
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+}
+
+/* Mobile Fix */
 @media (max-width: 768px) {
-    .login-container { flex-direction: column; }
-    .login-art { flex: 0.3; padding: 20px; }
-    .art-content h1 { font-size: 2rem; }
-    .shape-1, .shape-2 { display: none; }
-    .login-form-wrapper { flex: 0.7; }
-    .login-card { box-shadow: none; background: transparent; }
+    .login-container { flex-direction: column; height: auto; min-height: 100vh; }
+    .login-art { flex: 0; padding: 60px 20px; text-align: center; }
+    .art-content { text-align: center; }
+    .art-content h1 { font-size: 2.5rem; }
+    .art-content p { border-left: none; padding-left: 0; }
+    .login-form-wrapper { flex: 1; padding: 40px 20px; }
 }

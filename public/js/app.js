@@ -1,11 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
     
-    // Helper: Update Total Amount on Dashboard
+    // --- FIX: Safer Total Calculation ---
     function updateTotalDisplay(newTotal) {
         const heroAmount = document.querySelector(".hero-amount");
         if(heroAmount) {
-            // Format number with commas
-            const formatted = parseFloat(newTotal).toLocaleString('en-IN', {
+            // Convert to number, default to 0 if NaN
+            let amount = parseFloat(newTotal);
+            if (isNaN(amount)) amount = 0;
+
+            const formatted = amount.toLocaleString('en-IN', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
@@ -13,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Helper: Get Icon Name based on Category
     function getIconName(category) {
         switch(category) {
             case 'Food': return 'fast-food-outline';
@@ -31,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
-        
         const iconName = type === 'success' ? 'checkmark-circle' : 'alert-circle';
         const iconColor = type === 'success' ? '#166534' : '#ef4444';
 
@@ -39,9 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <ion-icon name="${iconName}" style="font-size: 1.5rem; color: ${iconColor};"></ion-icon>
             <span class="toast-message">${message}</span>
         `;
-        
         container.appendChild(toast);
-
         setTimeout(() => {
             toast.style.animation = "fadeOut 0.3s forwards";
             setTimeout(() => toast.remove(), 300);
@@ -68,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (icon) icon.setAttribute("name", isDark ? "sunny-outline" : "moon-outline");
     }
 
-    // --- 1. AJAX ADD (NO RELOAD) ---
+    // --- 1. AJAX ADD EXPENSE ---
     const form = document.getElementById("expenseForm");
     if (form) {
         form.addEventListener("submit", (e) => {
@@ -76,7 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
             
             const titleInput = form.querySelector('[name="title"]');
             const amountInput = form.querySelector('[name="amount"]');
-            const categoryInput = form.querySelector('[name="category"]');
             
             if(titleInput.value.trim() === "" || parseFloat(amountInput.value) <= 0) {
                 showToast("Please check your input", "error");
@@ -98,12 +96,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (data.success) {
                     showToast("Expense added successfully!", "success");
                     
-                    // 1. Update Total
+                    // Update Total safely
                     updateTotalDisplay(data.newTotal);
 
-                    // 2. Add Row to List (Dynamic HTML)
+                    // Add Row to List
                     const list = document.getElementById("transactionList");
                     if(list) {
+                        // Use the formatted date from server
+                        const dateDisplay = data.expense.formatted_date || "Just now";
+                        
                         const newRowHTML = `
                         <div class="transaction-item" id="row-${data.expense.id}">
                             <div class="t-left">
@@ -115,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                         <span class="t-title">${data.expense.title}</span>
                                         <span class="badge">${data.expense.category}</span>
                                     </div>
-                                    <span class="t-meta">Just now</span>
+                                    <span class="t-meta">${dateDisplay}</span>
                                 </div>
                             </div>
                             <div class="t-right">
@@ -127,17 +128,17 @@ document.addEventListener("DOMContentLoaded", () => {
                             </div>
                         </div>
                         `;
-                        // Insert at the top
                         list.insertAdjacentHTML('afterbegin', newRowHTML);
                     }
-
-                    // 3. Clear Form
                     form.reset();
                 } else {
                     showToast(data.message || "Error adding expense", "error");
                 }
             })
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err);
+                showToast("Connection Error", "error");
+            })
             .finally(() => {
                 btn.innerText = originalText;
                 btn.disabled = false;
@@ -145,16 +146,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- 2. DELETE (NO RELOAD) ---
+    // --- 2. DELETE & EDIT LISTENER ---
     const list = document.getElementById("transactionList");
     if (list) {
         list.addEventListener("click", (e) => {
             const delBtn = e.target.closest(".btn-delete-link");
             if (delBtn) {
                 e.preventDefault();
-                const id = delBtn.dataset.id;
-                
                 if (confirm("Are you sure?")) {
+                    const id = delBtn.dataset.id;
                     fetch("index.php?action=ajaxDelete", {
                         method: "POST",
                         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -164,17 +164,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     .then(data => {
                         if (data.success) {
                             showToast("Expense deleted", "success");
-                            
-                            // 1. Animate & Remove Row
                             const row = document.getElementById(`row-${id}`);
                             if (row) {
-                                row.style.transition = "all 0.3s ease";
                                 row.style.opacity = "0";
-                                row.style.transform = "translateX(20px)";
                                 setTimeout(() => row.remove(), 300);
                             }
-
-                            // 2. Update Total
                             updateTotalDisplay(data.newTotal);
                         } else {
                             showToast("Could not delete", "error");
@@ -183,7 +177,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
-            // Edit Click Listener
             const editBtn = e.target.closest(".btn-edit-link");
             if (editBtn) {
                 e.preventDefault();
@@ -192,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- 3. EDIT & UPDATE (NO RELOAD) ---
+    // --- 3. EDIT MODAL ---
     const modal = document.getElementById("editModal");
     const editForm = document.getElementById("editForm");
 
@@ -229,26 +222,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (data.success) {
                     showToast("Updated successfully!", "success");
                     modal.classList.remove("active");
-
-                    // 1. Update Total
                     updateTotalDisplay(data.newTotal);
 
-                    // 2. Update Row UI directly
                     const id = formData.get('id');
                     const row = document.getElementById(`row-${id}`);
                     if(row) {
-                        const title = formData.get('title');
-                        const amount = formData.get('amount');
-                        const cat = formData.get('category');
-
-                        row.querySelector('.t-title').innerText = title;
-                        row.querySelector('.t-amount').innerText = "-₹" + parseFloat(amount).toFixed(2);
-                        row.querySelector('.badge').innerText = cat;
-                        // Update Icon
+                        row.querySelector('.t-title').innerText = formData.get('title');
+                        row.querySelector('.t-amount').innerText = "-₹" + parseFloat(formData.get('amount')).toFixed(2);
+                        row.querySelector('.badge').innerText = formData.get('category');
                         const iconWrapper = row.querySelector('.t-icon-bg ion-icon');
-                        if(iconWrapper) iconWrapper.setAttribute("name", getIconName(cat));
+                        if(iconWrapper) iconWrapper.setAttribute("name", getIconName(formData.get('category')));
                     }
-
                 } else {
                     showToast("Update failed", "error");
                 }

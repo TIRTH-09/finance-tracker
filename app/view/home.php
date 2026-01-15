@@ -89,7 +89,7 @@
             <h2 class="section-title">Recent Transactions</h2>
         </div>
 
-        <div class="card">
+       <div class="card">
             <?php if (empty($expenses)): ?>
                 <div style="text-align: center; padding: 40px; color: var(--text-muted);">
                     <ion-icon name="wallet-outline" style="font-size: 3rem; opacity: 0.5; margin-bottom: 10px;"></ion-icon>
@@ -119,7 +119,15 @@
                                     <span class="t-title"><?= htmlspecialchars($row['title']) ?></span>
                                     <span class="badge"><?= htmlspecialchars($row['category']) ?></span>
                                 </div>
-                                <span class="t-meta">Today</span>
+                                <span class="t-meta">
+                                    <?php 
+                                        if(isset($row['created_at'])) {
+                                            echo date('M d, h:i A', strtotime($row['created_at']));
+                                        } else {
+                                            echo "Recent";
+                                        }
+                                    ?>
+                                </span>
                             </div>
                         </div>
                         <div class="t-right">

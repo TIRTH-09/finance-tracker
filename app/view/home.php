@@ -18,16 +18,28 @@
             <div class="brand-icon"></div>
             FinanceTrack
         </div>
-        <nav class="menu">
-            <a href="index.php" class="menu-item active">
-                <ion-icon name="grid-outline" class="menu-icon"></ion-icon>
-                Overview
-            </a>
-            <a href="#" class="menu-item">
-                <ion-icon name="receipt-outline" class="menu-icon"></ion-icon>
-                Transactions
-            </a>
-        </nav>
+     <nav class="menu" style="flex: 1; display: flex; flex-direction: column;">
+    <a href="index.php" class="menu-item active">
+        <ion-icon name="grid-outline" class="menu-icon"></ion-icon>
+        Overview
+    </a>
+    <a href="#" class="menu-item">
+        <ion-icon name="receipt-outline" class="menu-icon"></ion-icon>
+        Transactions
+    </a>
+    
+    <div style="flex-grow: 1;"></div>
+
+    <div style="padding-top: 20px; border-top: 1px solid var(--border-light);">
+        <div style="padding: 0 16px 10px 16px; font-size: 0.85rem; color: var(--text-muted);">
+            Logged in as <strong><?= htmlspecialchars($_SESSION['username'] ?? 'User') ?></strong>
+        </div>
+        <a href="index.php?action=logout" class="menu-item" style="color: var(--danger);">
+            <ion-icon name="log-out-outline" class="menu-icon"></ion-icon>
+            Logout
+        </a>
+    </div>
+</nav>
     </aside>
 
     <main class="main-content">

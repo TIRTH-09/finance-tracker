@@ -450,3 +450,117 @@ body {
     max-width: 450px;
     border: 1px solid var(--border-light);
 }
+
+/* ... [KEEP ALL PREVIOUS CSS] ... */
+
+/* ================= LOGIN PAGE STYLES ================= */
+.login-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background: var(--bg-white);
+    overflow: hidden;
+}
+
+/* Left Art Section */
+.login-art {
+    flex: 1;
+    background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    padding: 40px;
+    overflow: hidden;
+}
+
+.art-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.art-content h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 10px; letter-spacing: -1px; }
+.art-content p { font-size: 1.2rem; opacity: 0.9; font-weight: 300; }
+
+/* Abstract Floating Shapes */
+.floating-shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    z-index: 1;
+}
+
+.shape-1 {
+    width: 300px; height: 300px;
+    top: -50px; left: -50px;
+    animation: float 10s infinite ease-in-out;
+}
+
+.shape-2 {
+    width: 200px; height: 200px;
+    bottom: 50px; right: -20px;
+    background: rgba(255, 255, 255, 0.15);
+    animation: float 15s infinite ease-in-out reverse;
+}
+
+@keyframes float {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(30px, 50px) rotate(10deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* Right Form Section */
+.login-form-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg-main);
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 40px;
+    background: var(--bg-white);
+    border-radius: 24px;
+    box-shadow: 0 20px 50px -10px rgba(0,0,0,0.1);
+}
+
+.login-header { margin-bottom: 32px; text-align: center; }
+.login-header h2 { font-size: 1.8rem; font-weight: 800; color: var(--text-dark); margin-bottom: 8px; }
+.login-header p { color: var(--text-muted); }
+
+/* Input with Icon */
+.input-icon-wrap { position: relative; display: flex; align-items: center; }
+.input-icon-wrap ion-icon {
+    position: absolute;
+    left: 16px;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+}
+.input-icon-wrap .form-input { padding-left: 48px; }
+
+.error-banner {
+    background: #fef2f2;
+    color: #ef4444;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+    border: 1px solid #fecaca;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .login-container { flex-direction: column; }
+    .login-art { flex: 0.3; padding: 20px; }
+    .art-content h1 { font-size: 2rem; }
+    .shape-1, .shape-2 { display: none; }
+    .login-form-wrapper { flex: 0.7; }
+    .login-card { box-shadow: none; background: transparent; }
+}

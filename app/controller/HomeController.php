@@ -1,10 +1,12 @@
 <?php
 require_once __DIR__ . "/../model/Expense.php";
-require_once __DIR__ . "/../model/User.php"; // Include User Model
+require_once __DIR__ . "/../model/User.php";
 
 class HomeController {
     
-    // Check if user is logged in
+    // ... [Keep checkAuth(), index(), login(), logout() as they were] ...
+
+    // START: KEEP PREVIOUS METHODS
     private function checkAuth() {
         if (!isset($_SESSION['user_id'])) {
             header("Location: index.php?action=login");
@@ -13,13 +15,11 @@ class HomeController {
     }
 
     public function index() {
-        $this->checkAuth(); // Protect this page
-
+        $this->checkAuth();
         $model = new Expense();
         $result = $model->getAll();
         $expenses = [];
         $total = 0;
-        
         if ($result) {
             while ($row = $result->fetch_assoc()) {
                 $expenses[] = $row;
@@ -29,21 +29,21 @@ class HomeController {
         require __DIR__ . "/../view/home.php";
     }
 
-    // Show Login Page
     public function login() {
-        if (isset($_SESSION['user_id'])) {
-            header("Location: index.php");
-            exit;
-        }
+        if (isset($_SESSION['user_id'])) { header("Location: index.php"); exit; }
         require __DIR__ . "/../view/login.php";
     }
 
-    // Process Login Submission
+    public function logout() {
+        session_destroy();
+        header("Location: index.php?action=login");
+        exit;
+    }
+    
     public function auth() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userModel = new User();
             $user = $userModel->login($_POST['username'], $_POST['password']);
-
             if ($user) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
@@ -51,21 +51,54 @@ class HomeController {
                 exit;
             } else {
                 $error = "Invalid username or password";
+                $username_value = $_POST['username']; // Send back input
                 require __DIR__ . "/../view/login.php";
             }
         }
     }
+    // END: KEEP PREVIOUS METHODS
 
-    // Logout
-    public function logout() {
-        session_destroy();
-        header("Location: index.php?action=login");
-        exit;
+
+    // --- NEW: REGISTRATION LOGIC ---
+    
+    public function register() {
+        if (isset($_SESSION['user_id'])) { header("Location: index.php"); exit; }
+        require __DIR__ . "/../view/register.php";
     }
 
-    // --- AJAX Methods (Keep these same, but protect them) ---
+    public function storeUser() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $username = trim($_POST['username']);
+            $password = $_POST['password'];
+            $confirm = $_POST['confirm_password'];
+
+            // Server Validation
+            if ($password !== $confirm) {
+                $error = "Passwords do not match";
+                require __DIR__ . "/../view/register.php";
+                exit;
+            }
+
+            $userModel = new User();
+            $status = $userModel->register($username, $password);
+
+            if ($status === "success") {
+                // Auto login or redirect to login
+                header("Location: index.php?action=login&registered=true");
+                exit;
+            } elseif ($status === "exists") {
+                $error = "Username already taken";
+                require __DIR__ . "/../view/register.php";
+            } else {
+                $error = "Database error. Try again.";
+                require __DIR__ . "/../view/register.php";
+            }
+        }
+    }
+
+    // ... [Keep all your AJAX methods (ajaxAdd, etc.) exactly as they were] ...
     
-    // ... [Keep getCurrentTotal() here] ...
+    // Helper to get total (Required for AJAX)
     private function getCurrentTotal() {
         $model = new Expense();
         $result = $model->getAll();
@@ -75,11 +108,11 @@ class HomeController {
         }
         return $total; 
     }
-
+    
     public function ajaxAdd() {
-        $this->checkAuth(); // Protect
-        // ... [Paste your previous ajaxAdd code here] ...
-        $this->cleanOutput();
+        $this->checkAuth();
+        ob_clean();
+        header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = trim($_POST['title'] ?? '');
             $amount = floatval($_POST['amount'] ?? 0);
@@ -104,59 +137,7 @@ class HomeController {
             exit;
         }
     }
-
-    public function ajaxDelete() {
-        $this->checkAuth(); // Protect
-        // ... [Paste previous ajaxDelete code] ...
-        $this->cleanOutput();
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'] ?? null;
-            if ($id) {
-                $model = new Expense();
-                $success = $model->delete($id);
-                echo json_encode(['success' => $success, 'newTotal' => $this->getCurrentTotal()]);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'ID missing']);
-            }
-            exit;
-        }
-    }
-
-    public function ajaxUpdate() {
-        $this->checkAuth(); // Protect
-        // ... [Paste previous ajaxUpdate code] ...
-        $this->cleanOutput();
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'] ?? null;
-            $title = trim($_POST['title'] ?? '');
-            $amount = floatval($_POST['amount'] ?? 0);
-            $category = $_POST['category'] ?? 'Other';
-            if (empty($title) || $amount <= 0 || !$id) {
-                echo json_encode(['success' => false, 'message' => 'Invalid input']); exit;
-            }
-            $model = new Expense();
-            $success = $model->update($id, $title, $amount, $category);
-            echo json_encode(['success' => $success, 'newTotal' => $this->getCurrentTotal()]);
-            exit;
-        }
-    }
-
-    public function ajaxGetExpense() {
-        $this->checkAuth(); // Protect
-        $this->cleanOutput();
-        $id = $_GET['id'] ?? null;
-        if ($id) {
-            $model = new Expense();
-            $data = $model->find($id);
-            echo json_encode(['success' => !!$data, 'data' => $data]);
-        } else {
-            echo json_encode(['success' => false]);
-        }
-        exit;
-    }
-
-    private function cleanOutput() {
-        ob_clean();
-        header('Content-Type: application/json');
-    }
+    
+    // (Ensure you keep ajaxDelete, ajaxUpdate, ajaxGetExpense here too)
+    // ... [Paste them from previous code] ...
 }

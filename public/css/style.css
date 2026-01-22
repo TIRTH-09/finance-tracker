@@ -656,3 +656,46 @@ body {
     .art-content p { border-left: none; padding-left: 0; }
     .login-form-wrapper { flex: 1; padding: 40px 20px; }
 }
+
+/* ================= VALIDATION STYLES (Industry Standard) ================= */
+
+/* The Error Class - Toggles Red Border */
+.form-input.error {
+    border-color: #ef4444 !important; /* Red */
+    background-color: #fef2f2 !important; /* Very light red background */
+    animation: shake 0.4s ease-in-out; /* Subtle shake effect */
+}
+
+/* Error Text Message (Small text below input) */
+.input-error-msg {
+    color: #ef4444;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    margin-left: 4px;
+    display: none; /* Hidden by default */
+}
+
+.input-error-msg.visible {
+    display: block;
+}
+
+/* Shake Animation for wrong input */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+/* Link Styles for "Create Account" */
+.auth-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-decoration: none;
+}
+.auth-link:hover {
+    color: var(--primary);
+    text-decoration: underline;
+}

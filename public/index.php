@@ -1,6 +1,5 @@
 <?php
-session_start(); // START SESSION HERE
-
+session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -15,6 +14,12 @@ switch ($action) {
         break;
     case 'auth':
         $controller->auth();
+        break;
+    case 'register':      // NEW
+        $controller->register();
+        break;
+    case 'storeUser':     // NEW
+        $controller->storeUser();
         break;
     case 'logout':
         $controller->logout();

@@ -23,11 +23,24 @@ class User {
         return false;
     }
     
-    // Optional: For future registration features
+    // NEW: Register Function
     public function register($username, $password) {
+        // 1. Check if username already exists
+        $check = $this->db->prepare("SELECT id FROM users WHERE username = ?");
+        $check->bind_param("s", $username);
+        $check->execute();
+        if ($check->get_result()->num_rows > 0) {
+            return "exists"; // Username taken
+        }
+
+        // 2. Hash password and insert
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $this->db->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
         $stmt->bind_param("ss", $username, $hash);
-        return $stmt->execute();
+        
+        if ($stmt->execute()) {
+            return "success";
+        }
+        return "error";
     }
 }

@@ -674,16 +674,27 @@ input.form-input.input-error:focus,
     box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); 
 }
 
-/* Input Icons */
-.input-icon-wrap ion-icon {
+/* Input Icons (login page – wrap must be positioned for icon) */
+.login-form-wrapper .input-icon-wrap {
+    position: relative;
+    display: block;
+}
+.login-form-wrapper .input-icon-wrap ion-icon {
     position: absolute;
     left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
     color: #94a3b8;
     font-size: 1.2rem;
     transition: color 0.2s;
+    pointer-events: none;
 }
-.input-icon-wrap:focus-within ion-icon {
+.login-form-wrapper .input-icon-wrap:focus-within ion-icon {
     color: #4f46e5;
+}
+.login-form-wrapper .input-icon-wrap .form-input {
+    padding-left: 48px;
+    width: 100%;
 }
 
 /* Button */

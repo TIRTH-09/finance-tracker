@@ -39,25 +39,41 @@
                 </div>
             <?php endif; ?>
 
+<<<<<<< HEAD
             <form id="loginForm" method="POST" action="index.php?action=auth" novalidate>
+=======
+            <form method="POST" action="index.php?action=auth" id="loginForm">
+>>>>>>> c4fb70f (ready3)
                 <div class="form-group">
                     <label class="form-label">Username</label>
-                    <div class="input-icon-wrap">
+                    <div class="input-icon-wrap <?= isset($error) ? 'input-error shake' : '' ?>">
                         <ion-icon name="person-outline"></ion-icon>
+<<<<<<< HEAD
                         <input type="text" name="username" id="login-user" class="form-input" 
                                value="<?= isset($username_value) ? htmlspecialchars($username_value) : '' ?>" 
                                placeholder="admin">
                     </div>
                     <small class="input-error-msg">Username is required</small>
+=======
+                        <input type="text" name="username" id="username" class="form-input <?= isset($error) ? 'input-error' : '' ?>" placeholder="admin" autocomplete="username" value="<?= isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '' ?>">
+                    </div>
+                    <span class="error-text" id="username-error" role="alert"></span>
+>>>>>>> c4fb70f (ready3)
                 </div>
 
                 <div class="form-group" style="margin-bottom: 30px;">
                     <label class="form-label">Password</label>
-                    <div class="input-icon-wrap">
+                    <div class="input-icon-wrap <?= isset($error) ? 'input-error shake' : '' ?>">
                         <ion-icon name="lock-closed-outline"></ion-icon>
+<<<<<<< HEAD
                         <input type="password" name="password" id="login-pass" class="form-input" placeholder="••••••••">
                     </div>
                     <small class="input-error-msg">Password is required</small>
+=======
+                        <input type="password" name="password" id="password" class="form-input <?= isset($error) ? 'input-error' : '' ?>" placeholder="••••••••" autocomplete="current-password">
+                    </div>
+                    <span class="error-text" id="password-error" role="alert"></span>
+>>>>>>> c4fb70f (ready3)
                 </div>
 
                 <button type="submit" class="btn-primary">Sign In</button>
@@ -74,6 +90,7 @@
     </div>
 </div>
 
+<<<<<<< HEAD
 <script>
     // Validation Logic
     document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -117,5 +134,8 @@
     });
 </script>
 
+=======
+<script src="js/app.js?v=<?php echo time(); ?>"></script>
+>>>>>>> c4fb70f (ready3)
 </body>
 </html>

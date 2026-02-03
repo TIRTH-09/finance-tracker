@@ -36,6 +36,9 @@ switch ($action) {
     case 'ajaxUpdate':
         $controller->ajaxUpdate();
         break;
+    case 'transactions':
+        $controller->transactions();
+        break;
     case 'index':
     default:
         $controller->index();

@@ -209,6 +209,43 @@ body {
 }
 .form-input:focus, .form-select:focus { outline: none; border-color: var(--primary); background: var(--bg-white); }
 
+/* Validation: red border and shake for errors (add expense, edit modal, login) */
+input.form-input.input-error,
+.form-group .form-input.input-error,
+.input-icon-wrap.input-error .form-input {
+    border: 2px solid var(--danger) !important;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25) !important;
+    background-color: #fef2f2 !important;
+}
+input.form-input.input-error:focus,
+.form-group .form-input.input-error:focus,
+.input-icon-wrap.input-error .form-input:focus {
+    border-color: var(--danger) !important;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25) !important;
+}
+.error-text {
+    color: var(--danger);
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 6px;
+    display: none;
+}
+.error-text.visible {
+    display: block !important;
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    15% { transform: translateX(-8px); }
+    30% { transform: translateX(8px); }
+    45% { transform: translateX(-6px); }
+    60% { transform: translateX(6px); }
+    75% { transform: translateX(-3px); }
+    90% { transform: translateX(3px); }
+}
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
 .btn-primary {
     width: 100%;
     padding: 14px;
@@ -583,6 +620,24 @@ body {
     background: transparent;
     border: none;
     box-shadow: none;
+}
+
+.error-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    color: #b91c1c;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.error-banner ion-icon {
+    flex-shrink: 0;
+    font-size: 1.2rem;
 }
 
 .login-header { text-align: left; margin-bottom: 32px; }

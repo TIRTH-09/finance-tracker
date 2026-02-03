@@ -23,7 +23,7 @@
         <ion-icon name="grid-outline" class="menu-icon"></ion-icon>
         Overview
     </a>
-    <a href="#" class="menu-item">
+    <a href="index.php?action=transactions" class="menu-item">
         <ion-icon name="receipt-outline" class="menu-icon"></ion-icon>
         Transactions
     </a>
@@ -66,15 +66,17 @@
                  <div class="section-header">
                     <h2 class="section-title">Add New Expense</h2>
                 </div>
-                <form id="expenseForm">
+                <form id="expenseForm" novalidate>
                     <div class="form-group">
                         <label class="form-label">Description</label>
-                        <input type="text" name="title" class="form-input" placeholder="e.g. Whole Foods Market" required>
+                        <input type="text" name="title" id="title" class="form-input" placeholder="e.g. Whole Foods Market" required>
+                        <span class="error-text" role="alert"></span>
                     </div>
                     <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                        <div>
+                        <div class="form-group">
                             <label class="form-label">Amount</label>
-                            <input type="number" name="amount" step="0.01" min="0.01" class="form-input" placeholder="0.00" required>
+                            <input type="number" name="amount" id="amount" step="0.01" min="0.01" class="form-input" placeholder="0.00" required>
+                            <span class="error-text" role="alert"></span>
                         </div>
                         <div>
                              <label class="form-label">Category</label>
@@ -102,14 +104,13 @@
         </div>
 
        <div class="card">
+                <div class="transaction-list" id="transactionList">
             <?php if (empty($expenses)): ?>
-                <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                <div class="transaction-empty" id="transactionEmpty" style="text-align: center; padding: 40px; color: var(--text-muted);">
                     <ion-icon name="wallet-outline" style="font-size: 3rem; opacity: 0.5; margin-bottom: 10px;"></ion-icon>
                     <p>No transactions yet. Add one above!</p>
                 </div>
-            <?php else: ?>
-                <div class="transaction-list" id="transactionList">
-                    <?php 
+            <?php else:
                     function getCategoryIcon($cat) {
                         switch($cat) {
                             case 'Food': return 'fast-food-outline';
@@ -151,8 +152,8 @@
                         </div>
                     </div>
                     <?php endforeach; ?>
-                </div>
             <?php endif; ?>
+                </div>
         </div>
     </main>
 </div>
@@ -165,15 +166,17 @@
                 <ion-icon name="close-outline"></ion-icon>
             </button>
         </div>
-        <form id="editForm">
+        <form id="editForm" novalidate>
             <input type="hidden" name="id" id="edit-id">
             <div class="form-group">
                 <label class="form-label">Description</label>
                 <input type="text" name="title" id="edit-title" class="form-input" required>
+                <span class="error-text" role="alert"></span>
             </div>
             <div class="form-group">
                 <label class="form-label">Amount</label>
                 <input type="number" name="amount" id="edit-amount" step="0.01" min="0.01" class="form-input" required>
+                <span class="error-text" role="alert"></span>
             </div>
             <div class="form-group" style="margin-bottom: 20px;">
                 <label class="form-label">Category</label>

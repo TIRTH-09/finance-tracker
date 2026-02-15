@@ -22,6 +22,15 @@ class User {
         }
         return false;
     }
+
+    // Find user by username only (for field-specific validation)
+    public function findByUsername($username) {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc(); // returns row or null
+    }
     
     // NEW: Register Function
     public function register($username, $password) {

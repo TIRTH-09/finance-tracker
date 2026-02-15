@@ -27,36 +27,41 @@
                 <p>Please enter your credentials to access your dashboard.</p>
             </div>
 
-            <?php if (isset($error)): ?>
-                <div class="error-banner">
-                    <ion-icon name="warning-outline"></ion-icon>
-                    <span><?= htmlspecialchars($error) ?></span>
+            <?php if (isset($_SESSION['register_success'])): ?>
+                <div class="error-banner" style="background: #dcfce7; border-color: #86efac; color: #166534;">
+                    <ion-icon name="checkmark-circle-outline"></ion-icon>
+                    <span><?= htmlspecialchars($_SESSION['register_success']) ?></span>
                 </div>
+                <?php unset($_SESSION['register_success']); ?>
             <?php endif; ?>
 
             <form id="loginForm" method="POST" action="index.php?action=auth" novalidate>
                 <div class="form-group">
                     <label class="form-label" for="username">Username</label>
-                    <div class="input-icon-wrap <?= isset($error) ? 'input-error shake' : '' ?>">
+                    <div class="input-icon-wrap <?= !empty($usernameError) ? 'input-error shake' : '' ?>">
                         <ion-icon name="person-outline"></ion-icon>
-                        <input type="text" name="username" id="username" class="form-input <?= isset($error) ? 'input-error' : '' ?>" placeholder="admin" autocomplete="username" value="<?= isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '' ?>">
+                        <input type="text" name="username" id="username" class="form-input <?= !empty($usernameError) ? 'input-error' : '' ?>" placeholder="admin" autocomplete="username" value="<?= isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '' ?>">
                     </div>
-                    <span class="error-text" role="alert"></span>
+                    <span class="error-text <?= !empty($usernameError) ? 'visible' : '' ?>" role="alert" <?= !empty($usernameError) ? 'style="display:block"' : '' ?>><?= !empty($usernameError) ? htmlspecialchars($usernameError) : '' ?></span>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 30px;">
                     <label class="form-label" for="password">Password</label>
-                    <div class="input-icon-wrap <?= isset($error) ? 'input-error shake' : '' ?>">
+                    <div class="input-icon-wrap <?= !empty($passwordError) ? 'input-error shake' : '' ?>">
                         <ion-icon name="lock-closed-outline"></ion-icon>
-                        <input type="password" name="password" id="password" class="form-input <?= isset($error) ? 'input-error' : '' ?>" placeholder="••••••••" autocomplete="current-password">
+                        <input type="password" name="password" id="password" class="form-input <?= !empty($passwordError) ? 'input-error' : '' ?>" placeholder="••••••••" autocomplete="current-password">
                     </div>
-                    <span class="error-text" role="alert"></span>
+                    <span class="error-text <?= !empty($passwordError) ? 'visible' : '' ?>" role="alert" <?= !empty($passwordError) ? 'style="display:block"' : '' ?>><?= !empty($passwordError) ? htmlspecialchars($passwordError) : '' ?></span>
                 </div>
 
                 <button type="submit" class="btn-primary">Sign In</button>
             </form>
 
-            <div style="margin-top: 30px; text-align: center; color: var(--text-muted); font-size: 0.8rem;">
+            <a href="index.php?action=register" class="auth-link">
+                Don't have an account? <strong>Create Account</strong>
+            </a>
+
+            <div style="margin-top: 20px; text-align: center; color: var(--text-muted); font-size: 0.8rem;">
                 Protected by 256-bit SSL Encryption
             </div>
         </div>

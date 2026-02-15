@@ -63,24 +63,96 @@ class HomeController {
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
 
-        if ($username === '' || $password === '') {
-            $error = "Please enter both username and password.";
+        // Field-specific errors
+        $usernameError = '';
+        $passwordError = '';
+
+        if ($username === '') {
+            $usernameError = 'Username is required.';
+        }
+        if ($password === '') {
+            $passwordError = 'Password is required.';
+        }
+
+        // If either field is empty, show errors and return
+        if ($usernameError || $passwordError) {
             require __DIR__ . "/../view/login.php";
             return;
         }
 
         $userModel = new User();
-        $user = $userModel->login($username, $password);
+        $user = $userModel->findByUsername($username);
 
-        if ($user) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
+        if (!$user) {
+            // Username doesn't exist
+            $usernameError = 'Username not found.';
+            require __DIR__ . "/../view/login.php";
+            return;
+        }
+
+        if (!password_verify($password, $user['password'])) {
+            // Username exists but password is wrong
+            $passwordError = 'Incorrect password.';
+            require __DIR__ . "/../view/login.php";
+            return;
+        }
+
+        // Both correct — log in
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        header("Location: index.php");
+        exit;
+    }
+
+    // Show Registration Page
+    public function register() {
+        if (isset($_SESSION['user_id'])) {
             header("Location: index.php");
             exit;
         }
+        require __DIR__ . "/../view/register.php";
+    }
 
-        $error = "Invalid username or password.";
-        require __DIR__ . "/../view/login.php";
+    // Process Registration Submission
+    public function storeUser() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?action=register");
+            exit;
+        }
+
+        $username = trim($_POST['username'] ?? '');
+        $password = $_POST['password'] ?? '';
+        $confirm  = $_POST['confirm_password'] ?? '';
+
+        if ($username === '' || $password === '' || $confirm === '') {
+            $error = "All fields are required.";
+            require __DIR__ . "/../view/register.php";
+            return;
+        }
+
+        if ($password !== $confirm) {
+            $error = "Passwords do not match.";
+            require __DIR__ . "/../view/register.php";
+            return;
+        }
+
+        $userModel = new User();
+        $result = $userModel->register($username, $password);
+
+        if ($result === 'exists') {
+            $error = "Username is already taken.";
+            require __DIR__ . "/../view/register.php";
+            return;
+        }
+
+        if ($result === 'success') {
+            $_SESSION['register_success'] = "Account created successfully! Please sign in.";
+            header("Location: index.php?action=login");
+            exit;
+        }
+
+        $error = "Something went wrong. Please try again.";
+        require __DIR__ . "/../view/register.php";
     }
 
     // Logout

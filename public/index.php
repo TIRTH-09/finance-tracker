@@ -86,7 +86,17 @@ switch ($action) {
         $controller->transactions();
         break;
 
-    // 7.2 Default route — show the home/overview dashboard
+    // 7.2 Export transactions report as CSV
+    case 'exportExcel':
+        $controller->exportExcel();
+        break;
+
+    // 7.3 Show investment suggestions page
+    case 'invest':
+        $controller->invest();
+        break;
+
+    // 7.4 Default route — show the home/overview dashboard
     case 'index':
     default:
         $controller->index();

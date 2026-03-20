@@ -423,9 +423,72 @@ class HomeController {
     }
 
     /**
-     * 16. HELPER: Clean output buffer and set JSON content type
-     * 16.1 Called before all AJAX methods to ensure clean JSON output.
-     * 16.2 ob_clean() removes any HTML that may have been buffered.
+     * 16. EXPORT EXCEL (CSV) REPORT
+     * 16.1 Generates a CSV file of transactions and streams it as a download.
+     * 16.2 Supports ?type=all (default), ?type=income, or ?type=expense filtering.
+     */
+    public function exportExcel() {
+        $this->checkAuth();
+
+        // 16.3 Determine export type from query string
+        $type = $_GET['type'] ?? 'all';
+        if (!in_array($type, ['all', 'income', 'expense'])) {
+            $type = 'all';
+        }
+
+        // 16.4 Fetch all transactions
+        $model = new Expense();
+        $result = $model->getAll();
+
+        // 16.5 Build filtered array
+        $rows = [];
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                $rowType = $row['type'] ?? 'expense';
+                if ($type === 'all' || $rowType === $type) {
+                    $rows[] = $row;
+                }
+            }
+        }
+
+        // 16.6 Set headers for CSV download
+        $filename = 'finance_report_' . $type . '_' . date('Y-m-d') . '.csv';
+        ob_clean();
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        // 16.7 Write CSV content
+        $output = fopen('php://output', 'w');
+        // 16.7.1 Header row
+        fputcsv($output, ['Title', 'Amount (₹)', 'Category', 'Type', 'Date']);
+        // 16.7.2 Data rows
+        foreach ($rows as $row) {
+            fputcsv($output, [
+                $row['title'],
+                number_format((float)$row['amount'], 2, '.', ''),
+                $row['category'],
+                ucfirst($row['type'] ?? 'expense'),
+                isset($row['created_at']) ? date('Y-m-d H:i:s', strtotime($row['created_at'])) : 'N/A'
+            ]);
+        }
+        fclose($output);
+        exit;
+    }
+
+    /**
+     * 17. INVESTMENT SUGGESTIONS PAGE
+     * 17.1 Displays curated investment suggestions.
+     * 17.2 Protected — requires login.
+     */
+    public function invest() {
+        $this->checkAuth();
+        require __DIR__ . "/../view/invest.php";
+    }
+
+    /**
+     * 18. HELPER: Clean output buffer and set JSON content type
+     * 18.1 Called before all AJAX methods to ensure clean JSON output.
+     * 18.2 ob_clean() removes any HTML that may have been buffered.
      */
     private function cleanOutput() {
         ob_clean();

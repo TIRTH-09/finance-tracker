@@ -60,6 +60,10 @@
             <a href="index.php?action=transactions" class="menu-item active">
                 <ion-icon name="receipt-outline" class="menu-icon"></ion-icon>Transactions
             </a>
+            <!-- 5.2.3 Invest link —  investment suggestions -->
+            <a href="index.php?action=invest" class="menu-item">
+                <ion-icon name="trending-up-outline" class="menu-icon"></ion-icon>Invest
+            </a>
             
             <!-- 5.2.3 Spacer pushes logout to bottom -->
             <div style="flex-grow:1;"></div>

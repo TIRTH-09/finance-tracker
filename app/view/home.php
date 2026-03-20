@@ -67,6 +67,11 @@
                 <ion-icon name="receipt-outline" class="menu-icon"></ion-icon>
                 Transactions
             </a>
+            <!-- 5.2.3 "Invest" link — navigates to the investment suggestions page -->
+            <a href="index.php?action=invest" class="menu-item">
+                <ion-icon name="trending-up-outline" class="menu-icon"></ion-icon>
+                Invest
+            </a>
             
             <!-- 5.2.3 Spacer pushes the logout section to the bottom -->
             <div style="flex-grow: 1;"></div>
@@ -175,11 +180,32 @@
                 </form>
             </div>
 
-            <!-- 7.4 SPENDING INSIGHTS PLACEHOLDER CARD -->
-            <!-- 7.4.1 This card is a placeholder for future chart/analytics features -->
-            <div class="card" style="display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--text-muted);">
-                <ion-icon name="pie-chart" style="font-size: 3rem; opacity: 0.3; margin-bottom: 10px;"></ion-icon>
-                <p style="text-align: center; font-weight: 500;">Spending Insights<br>(Coming Soon)</p>
+            <!-- 7.4 EXPORT REPORTS CARD -->
+            <!-- 7.4.1 Download expense/income reports as Excel-compatible CSV files -->
+            <div class="card export-card">
+                <div class="export-header">
+                    <div class="export-icon-bg">
+                        <ion-icon name="download-outline"></ion-icon>
+                    </div>
+                    <div>
+                        <h3 class="export-title">Export Reports</h3>
+                        <p class="export-subtitle">Download your financial data</p>
+                    </div>
+                </div>
+                <div class="export-buttons">
+                    <a href="index.php?action=exportExcel&type=all" class="export-btn export-btn-all">
+                        <ion-icon name="document-text-outline"></ion-icon>
+                        All Transactions
+                    </a>
+                    <a href="index.php?action=exportExcel&type=expense" class="export-btn export-btn-expense">
+                        <ion-icon name="arrow-down-circle-outline"></ion-icon>
+                        Expenses Only
+                    </a>
+                    <a href="index.php?action=exportExcel&type=income" class="export-btn export-btn-income">
+                        <ion-icon name="arrow-up-circle-outline"></ion-icon>
+                        Income Only
+                    </a>
+                </div>
             </div>
         </div>
 
